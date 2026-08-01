@@ -16,11 +16,16 @@ import { PaymentRoutes } from "./app/modules/payment/payment.routes";
 
 const app: Application = express();
 
+const allowedOrigins = ["http://localhost:3000"];
+if (config.app_url) {
+  allowedOrigins.push(config.app_url);
+}
+
 app.use(
   cors({
-    origin: config.app_url,
+    origin: allowedOrigins,
     credentials: true,
-  }),
+  })
 );
 
 app.use(express.json());

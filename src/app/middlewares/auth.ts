@@ -15,10 +15,19 @@ declare global {
 
 const auth = (...requiredRoles: string[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization;
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+      throw new Error("You are not authorized!");
+    }
+
+    // 🔥 এখানে 'Bearer ' প্রিফিক্স আলাদা করে শুধু টোকেনটা নেওয়া হচ্ছে
+    const token = authHeader.startsWith("Bearer ")
+      ? authHeader.split(" ")[1]
+      : authHeader;
 
     if (!token) {
-      throw new Error("You are not authorized!");
+      throw new Error("Invalid token format!");
     }
 
     //  Verify token

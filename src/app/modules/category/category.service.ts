@@ -31,12 +31,21 @@ const getAllCategoriesFromDB = async () => {
 };
 
 const deleteCategoryFromDB = async (id: string) => {
-  const result = await prisma.category.delete({
-    where: {
-      id,
-    },
-  });
-  return result;
+  try {
+    const result = await prisma.category.delete({
+      where: { id },
+    });
+    return result;
+  } catch (error: any) {
+    if (error.code === "P2003") {
+      const customError: any = new Error(
+        "Cannot delete this category because services are linked to it!",
+      );
+      customError.statusCode = 400;
+      throw customError;
+    }
+    throw error;
+  }
 };
 
 const getSingleCategoryFromDB = async (id: string) => {
