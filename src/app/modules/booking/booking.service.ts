@@ -70,11 +70,11 @@ const getAllBookingsFromDB = async (userId: string, role: string) => {
           technicianProfile: { userId: userId },
         },
       },
-      include: { service: true, payment: true, review: true },
+      include: { service: true, payment: true, review: true, customer: true },
     });
   } else {
     result = await prisma.booking.findMany({
-      include: { service: true, payment: true, review: true },
+      include: { service: true, payment: true, review: true, customer: true },
     });
   }
 

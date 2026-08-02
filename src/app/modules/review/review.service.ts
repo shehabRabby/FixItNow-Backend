@@ -33,7 +33,9 @@ const createReviewInDB = async (
     throw new Error("You have already submitted a review for this booking!");
   }
 
-  const technicianProfileId = booking.service.technicianProfileId;
+  // সরাসরি service থেকে technicianProfileId নেওয়া হলো (TypeScript Error সমাধান করা হয়েছে)
+  const technicianProfileId = booking.service?.technicianProfileId;
+  
   if (!technicianProfileId) {
     throw new Error("No technician is assigned to this service to review!");
   }
@@ -81,10 +83,10 @@ const getAllReviewsFromDB = async (query: {
   const { customerId, technicianProfileId } = query;
   const findConditions: any = {};
 
-  if (customerId) {
+  if (customerId && customerId !== "undefined" && customerId !== "null") {
     findConditions.customerId = customerId;
   }
-  if (technicianProfileId) {
+  if (technicianProfileId && technicianProfileId !== "undefined" && technicianProfileId !== "null") {
     findConditions.technicianProfileId = technicianProfileId;
   }
 
@@ -98,7 +100,27 @@ const getAllReviewsFromDB = async (query: {
           email: true,
         },
       },
-      technicianProfile: true,
+      technicianProfile: {
+        include: {
+          user: {
+            select: {
+              name: true,
+              email: true,
+            },
+          },
+        },
+      },
+      booking: {
+        include: {
+          service: {
+            select: {
+              id: true,
+              title: true,
+              description: true,
+            },
+          },
+        },
+      },
     },
     orderBy: {
       createdAt: "desc",

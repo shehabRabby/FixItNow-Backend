@@ -13,7 +13,7 @@ router.post(
   BookingController.createBooking,
 );
 
-// only customer and technician can see bookings
+
 router.get(
   "/",
   auth("CUSTOMER", "TECHNICIAN", "ADMIN"),
@@ -32,7 +32,7 @@ router.patch(
   BookingController.updateBookingStatus
 );
 
-// only customer can cancel their booking
+
 router.patch(
   "/:id/cancel",
   auth("CUSTOMER"),
