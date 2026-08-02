@@ -31,4 +31,16 @@ router.post(
 );
 router.get("/categories", AdminController.getAllCategories);
 
+router.patch(
+  "/bookings/:id/status",
+  auth("ADMIN"),
+  AdminController.updateBookingStatus
+);
+
+router.delete(
+  "/bookings/:id",
+  auth("ADMIN"),
+  AdminController.deleteBooking
+);
+
 export const AdminRoutes = router;

@@ -80,12 +80,38 @@ const updateUserRole = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const updateBookingStatus = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { status } = req.body; // "ACCEPTED", "DECLINED", "COMPLETED", etc.
+
+  const result = await AdminService.updateBookingStatusInDB(id as string, status);
+
+  res.status(httpStatus.OK).json({
+    success: true,
+    message: "Booking status updated successfully!",
+    data: result,
+  });
+});
+
+const deleteBooking = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await AdminService.deleteBookingFromDB(id as string);
+
+  res.status(httpStatus.OK).json({
+    success: true,
+    message: "Booking deleted successfully!",
+    data: result,
+  });
+});
+
 export const AdminController = {
   getDashboardOverview,
   updateUserStatus,
   updateUserRole,
+  updateBookingStatus,
   getAllUsers,
   getAllBookings,
   createCategory,
   getAllCategories,
+  deleteBooking,
 };

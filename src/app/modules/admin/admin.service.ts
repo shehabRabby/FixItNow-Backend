@@ -1,4 +1,4 @@
-import { UserRole, UserStatus } from "../../../../generated/prisma/enums";
+import { BookingStatus, UserRole, UserStatus } from "../../../../generated/prisma/enums";
 import { prisma } from "../../../lib/prisma";
 
 const getDashboardOverviewFromDB = async () => {
@@ -202,6 +202,41 @@ const updateUserRoleInDB = async (
   });
 };
 
+const updateBookingStatusInDB = async (id: string, status: string) => {
+  const isBookingExist = await prisma.booking.findUnique({
+    where: { id },
+  });
+
+  if (!isBookingExist) {
+    throw new Error("Booking not found!");
+  }
+
+  return await prisma.booking.update({
+    where: { id },
+    data: { 
+      status: status as BookingStatus 
+    },
+    include: {
+      customer: { select: { id: true, name: true, email: true } },
+      service: true,
+    },
+  });
+};
+
+const deleteBookingFromDB = async (id: string) => {
+  const isBookingExist = await prisma.booking.findUnique({
+    where: { id },
+  });
+
+  if (!isBookingExist) {
+    throw new Error("Booking not found!");
+  }
+
+  return await prisma.booking.delete({
+    where: { id },
+  });
+};
+
 export const AdminService = {
   getDashboardOverviewFromDB,
   updateUserStatusInDB,
@@ -210,4 +245,6 @@ export const AdminService = {
   getAllBookingsFromDB,
   createCategoryInDB,
   getAllCategoriesFromDB,
+  updateBookingStatusInDB,
+  deleteBookingFromDB
 };
