@@ -19,6 +19,7 @@ const app: Application = express();
 const allowedOrigins = [
   "http://localhost:3000",
   "https://fix-it-now-mocha.vercel.app",
+  "https://fix-it-now-forntend.vercel.app",
   "https://fixitnow-frontend-alpha.vercel.app",
 ];
 if (config.app_url) {
