@@ -16,18 +16,27 @@ import { PaymentRoutes } from "./app/modules/payment/payment.routes";
 
 const app: Application = express();
 
-const allowedOrigins = ["http://localhost:3000"];
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://fix-it-now-mocha.vercel.app",
+  "https://fixitnow-frontend-alpha.vercel.app",
+];
 if (config.app_url) {
   allowedOrigins.push(config.app_url);
 }
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
-  })
+  }),
 );
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -42,7 +51,6 @@ app.use("/api/v1/profile", ProfileRoutes);
 app.use("/api/v1/admin", AdminRoutes);
 app.use("/api/v1/reviews", ReviewRoutes);
 app.use("/api/v1/payments", PaymentRoutes);
-
 
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({
